@@ -46,7 +46,9 @@ export default function Sidebar() {
             <button className="p-2 w-full bg-gray-500 mb-4" onClick={() => setCurrentTab('main')}>Back</button>
             <div className="text-white">
               <h2 className="text-lg font-bold mb-4">Game Rules</h2>
-              <p>Here are the rules of the game...</p>
+              <p>The rules of the game can be found <a href="https://nwatx.me/post/jspokergame" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">
+        here
+      </a></p>
             </div>
           </div>
         );

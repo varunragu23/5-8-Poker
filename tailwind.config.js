@@ -15,7 +15,14 @@ export default {
 
         // Complex site-specific column configuration
         'footer': '200px minmax(900px, 1fr) 100px',
-      }
+      },
+      keyframes: {
+        moveAndFlip: {
+          '0%': { transform: 'translate(0, 0) rotateY(0)' },
+          '50%': { transform: 'translate(100px, 100px) rotateY(90deg)' },
+          '100%': { transform: 'translate(200px, 200px) rotateY(180deg)' },
+        },
+      },
     },
   },
   plugins: [],

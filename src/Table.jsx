@@ -4,7 +4,7 @@ import { useDeck } from './DeckContext';
 import InputNumber from './InputNumber';
 
 export default function Table() {
-    const { deck, dealCard, cardImages, dealt, dealerDealt, userDealt, userWinning, getUserHand, getDealerHand, gameOver, setGameOver, bankroll, setBankroll, betAmt, getWinner} = useDeck();
+    const { deck, dealCard, cardImages, dealt, dealerDealt, userDealt, userWinning, getUserHand, getDealerHand, gameOver, setGameOver, bankroll, setBankroll, betAmt, getWinner, resetGame} = useDeck();
 
     const [isStartScreen, setIsStartScreen] = useState(true);
 
@@ -52,6 +52,7 @@ export default function Table() {
         setBankroll(prevValue => (prevValue - betAmt));
         setIsStartScreen(false);
         setGameOver(false);
+        resetGame();
     }
 
     function startScreen() {
@@ -74,14 +75,17 @@ export default function Table() {
         }
     }
 
+    function continueGame() {
+        setIsStartScreen(true);
+    }
+
     function gameOverScreen() {
-        if(userWinning) {
-            setBankroll(prevValue => (prevValue + 2 * betAmt));
-        }
         return <div className="flex flex-col justify-around items-center w-1/2 h-1/2 bg-white rounded-lg p-2 m-2 shadow-md">
                 <div>{getWinnerMessage()}</div>
                 <div>You {(userWinning ? 'won' : 'lost')} ${betAmt}</div>
                 <div>Current Bankroll: {bankroll}</div>
+                <button className ="bg-blue-700 hover:bg-blue-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24"onClick={continueGame}>Continue</button>
+
         </div>
     }
 
@@ -94,7 +98,7 @@ export default function Table() {
         {getDealerInfo()}
         <div className="flex content-center justify-evenly w-2/3 h-1/2 items-center m-2">
             {getDeckSrc()}
-            <div>
+            <div className="w-24">
                 {(dealt.length > 0) && (<img
             src={cardImages[`./assets/poker-double-qr/${getTopDealt()}.svg`].default}
             className="w-24 h-auto"

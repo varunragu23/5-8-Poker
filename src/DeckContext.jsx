@@ -1,5 +1,5 @@
 // src/DeckContext.jsx
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 import _ from 'lodash';
 
@@ -63,6 +63,10 @@ export const DeckProvider = ({ children }) => {
   const [bankroll, setBankroll] = useState(1000);
 
   const [betAmt, setBetAmt] = useState(1);
+
+  useEffect(() => {
+    getWinner();
+  }, [userDealt, dealerDealt]);
 
   console.log('gameOver' + gameOver);
 
@@ -134,6 +138,9 @@ export const DeckProvider = ({ children }) => {
     else {
         console.log('The User is winning with a ' + userHand['hand']);
         setUserWinning(true);
+        if(gameOver) {
+          setBankroll(prevValue => (prevValue + 2 * betAmt));
+        }
         return false;
     }
     return true;
@@ -145,14 +152,20 @@ export const DeckProvider = ({ children }) => {
         setRules(newRules);
       }
   }
-  console.log(bankroll);
+  console.log('bankroll is' + bankroll);
 
+  const resetGame = () => {
+    setDeck(createShuffledDeck());
+    setDealt([]);
+    setUserDealt([]);
+    setDealerDealt([]);
+  }
 
   return (
     <DeckContext.Provider value={{ 
       deck, dealt, userDealt, dealerDealt, dealCard, getTopDeck, cardImages, rules, getUserHand, 
       getDealerHand, getWinner, updateRules, userWinning, gameOver, gameStarted, setGameOver, bankroll,
-      betAmt, setBetAmt, setBankroll
+      betAmt, setBetAmt, setBankroll, resetGame
       }}>
       {children}
     </DeckContext.Provider>

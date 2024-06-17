@@ -23,6 +23,9 @@ export default {
           '100%': { transform: 'translate(200px, 200px) rotateY(180deg)' },
         },
       },
+      animation: {
+        moveAndFlip: 'moveAndFlip 1s ease-in-out forwards',
+      },
     },
   },
   plugins: [],

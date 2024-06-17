@@ -64,12 +64,81 @@ export const DeckProvider = ({ children }) => {
 
   const [betAmt, setBetAmt] = useState(1);
 
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [animatedCard, setAnimatedCard] = useState(null);
+
+  const [showFinalSrc, setShowFinalSrc] = useState(false);
+
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  const [simulateMode, setSimulateMode] = useState(false);
+
   useEffect(() => {
     getWinner();
   }, [userDealt, dealerDealt]);
 
+  useEffect(() => {
+    if(startTurn) {
+      setRules(tempRules);
+    }
+  }, [tempRules]);
+
   console.log('gameOver' + gameOver);
 
+
+  // const dealCard = () => {
+  //   if (deck.length === 0) {
+  //     setGameOver(true);
+  //     return;
+  //   }
+
+  //   setGameStarted(true);
+
+  //   const newDeck = [...deck];
+  //   const card = newDeck.pop();
+
+  //   let userLen = userDealt.length;
+  //   let dealerLen = dealerDealt.length;
+
+  //   if (rules[card] && userDealt.length < 5) {
+  //     setUserDealt(newUserDealt => [...newUserDealt, card]);
+  //     userLen++;
+  //     setStartTurn(true);
+  //     setRules(tempRules);
+  //   } else {
+  //     setDealerDealt(newDealerDealt => [...newDealerDealt, card]);
+  //     dealerLen++;
+  //     setStartTurn(false);
+  //   }
+
+  //   setTimeout(() => {
+  //     setShowFinalSrc(false);
+  //   }, 150);
+
+  //   setDeck(newDeck);
+  //   setDealt(newDealt => [...newDealt, card]);
+  //   setIsFlipping(true);
+
+  //   setTimeout(() => {
+  //     setShowFinalSrc(true);
+  //   }, 500); // Halfway through the animation (1s total duration / 2)
+
+  //   setTimeout(() => {
+  //     setIsFlipping(false);
+  //   }, 1000); // Duration of the animation in milliseconds
+
+  //   if (userLen === 5 && dealerLen >= 8) {
+  //     setGameOver(true);
+  //   }
+  // };
+
+  const getInitialSrc = () => {
+    return cardImages[`./assets/poker-double-qr/2B.svg`].default;
+  }
+
+  const getFinalSrc = () => {
+    return cardImages[`./assets/poker-double-qr/${deck[deck.length - 1]}.svg`].default;
+  }
 
   const dealCard = () => {
     if (deck.length === 0) {
@@ -86,10 +155,11 @@ export const DeckProvider = ({ children }) => {
     let userLen = userDealt.length;
     let dealerLen = dealerDealt.length;
 
-    if(rules[card] && (userDealt.length < 5)) {
+    if((rules[card]) && (userDealt.length < 5)) {
         setUserDealt(newUserDealt => [...newUserDealt, card]);
         userLen++;
         setStartTurn(true);
+        setSimulateMode(false);
         setRules(tempRules);
     }
     else {
@@ -111,8 +181,16 @@ export const DeckProvider = ({ children }) => {
     console.log('user ' + userDealt.length);
     console.log("dealer " + dealerDealt.length);
     // getWinner();
-
+    return;
   };
+
+  const simulateRound = () => {
+    let firstTime = true;
+    while(!startTurn || firstTime) {
+      firstTime = false;
+      setTimeout(() => {dealCard()}, 500);
+    }
+  }
 
   const getTopDeck = () => {
     if (deck.length === 0) return null;
@@ -159,13 +237,21 @@ export const DeckProvider = ({ children }) => {
     setDealt([]);
     setUserDealt([]);
     setDealerDealt([]);
+    setStartTurn(true);
+  }
+
+  if(simulateMode) {
+    setTimeout(() => {
+      dealCard();
+    }, 500);
   }
 
   return (
     <DeckContext.Provider value={{ 
       deck, dealt, userDealt, dealerDealt, dealCard, getTopDeck, cardImages, rules, getUserHand, 
       getDealerHand, getWinner, updateRules, userWinning, gameOver, gameStarted, setGameOver, bankroll,
-      betAmt, setBetAmt, setBankroll, resetGame
+      betAmt, setBetAmt, setBankroll, resetGame, isAnimating,
+      getInitialSrc, getFinalSrc, showFinalSrc, isFlipping, simulateRound, setSimulateMode
       }}>
       {children}
     </DeckContext.Provider>

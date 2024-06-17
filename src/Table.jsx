@@ -4,7 +4,10 @@ import { useDeck } from './DeckContext';
 import InputNumber from './InputNumber';
 
 export default function Table() {
-    const { deck, dealCard, cardImages, dealt, dealerDealt, userDealt, userWinning, getUserHand, getDealerHand, gameOver, setGameOver, bankroll, setBankroll, betAmt, getWinner, resetGame} = useDeck();
+    const { deck, dealCard, cardImages, dealt, dealerDealt, userDealt, userWinning, 
+        getUserHand, getDealerHand, gameOver, setGameOver, bankroll, setBankroll, 
+        betAmt, getWinner, resetGame, isAnimating, getInitialSrc, getFinalSrc, 
+        showFinalSrc, isFlipping, simulateRound, setSimulateMode} = useDeck();
 
     const [isStartScreen, setIsStartScreen] = useState(true);
 
@@ -24,20 +27,23 @@ export default function Table() {
         }
     }
 
+
     function getDealerInfo() {
-        return <div className="flex flex-col relative w-1/2 h-auto bg-slate-400 justify-center items-center rounded-lg p-2">
-            {!userWinning && (<div>
+        return <div className="flex flex-col relative w-1/2 h-16 bg-sky-200 justify-center items-center rounded-lg p-2">
+            <div>{!userWinning && (<div>
                 The Dealer is Winning
                 </div>)}
+            </div>
             <div>The Dealer has a {getDealerHand()}</div>
         </div>
     }
 
     function getUserInfo() {
-        return <div className="flex flex-col relative w-1/2 h-auto bg-slate-400 justify-center items-center rounded-lg p-2">
-        {userWinning && (<div>
+        return <div className="flex flex-col relative w-1/2 h-16 bg-sky-200 justify-center items-center rounded-lg p-2">
+        <div>{userWinning && (<div>
             The User is Winning
             </div>)}
+        </div>
         <div>The User has a {getUserHand()}</div>
         </div>
     }
@@ -93,6 +99,34 @@ export default function Table() {
         dealCard();
     }
 
+    function gameScreen2() {
+        return (
+            <>
+              {getDealerInfo()}
+              <div className="flex content-center justify-evenly w-2/3 h-1/2 items-center m-2">
+                {getDeckSrc()}
+                <div className="relative w-24">
+                  {(dealt.length > 0) && (
+                    <div className={`relative w-24 h-auto ${isFlipping ? 'animate-flip' : ''}`}>
+                      <img
+                        src={showFinalSrc ? getFinalSrc() : getInitialSrc()}
+                        alt="Flipping Card"
+                        className="w-24 h-auto backface-hidden"
+                      />
+                    </div>
+                  )}
+                </div>
+                {(!gameOver) && (
+                  <button className="bg-blue-700 hover:bg-blue-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24" onClick={dealCard}>
+                    Deal
+                  </button>
+                )}
+              </div>
+              {getUserInfo()}
+            </>
+          );
+    }
+
     function gameScreen() {
         return <>
         {getDealerInfo()}
@@ -105,7 +139,10 @@ export default function Table() {
             />)}
             </div>
             {(!gameOver) && (
+            <div className="flex flex-col justify-evenly">
             <button className ="bg-blue-700 hover:bg-blue-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24"onClick={handleTurn}>Deal</button>
+            </div>
+            
             ) }
         </div>
         {getUserInfo()}

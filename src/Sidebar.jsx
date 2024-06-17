@@ -35,15 +35,15 @@ export default function Sidebar() {
       case 'main':
         return (
           <div>
-            <button className="p-2 w-full bg-gray-500 mb-4" onClick={() => setIsOpen(!isOpen)}>Back</button>
-            <button className="p-2 w-full bg-blue-500 mb-4" onClick={() => setCurrentTab('rules')}>Game Rules</button>
-            <button className="p-2 w-full bg-green-500" onClick={() => setIsModalOpen(true)}>Select Cards</button>
+            <button className="p-2 w-full bg-gray-500 hover:bg-gray-600 mb-4 rounded-lg" onClick={() => setIsOpen(!isOpen)}>Back</button>
+            <button className="p-2 w-full bg-blue-500 hover:bg-blue-600 mb-4 rounded-lg" onClick={() => setCurrentTab('rules')}>Game Rules</button>
+            <button className="p-2 w-full bg-green-500 hover:bg-green-600 rounded-lg" onClick={() => setIsModalOpen(true)}>Select Cards</button>
           </div>
         );
       case 'rules':
         return (
           <div>
-            <button className="p-2 w-full bg-gray-500 mb-4" onClick={() => setCurrentTab('main')}>Back</button>
+            <button className="p-2 w-full bg-gray-500 hover:bg-gray-600 mb-4 rounded-lg" onClick={() => setCurrentTab('main')}>Back</button>
             <div className="text-white">
               <h2 className="text-lg font-bold mb-4">Game Rules</h2>
               <p>The rules of the game can be found <a href="https://nwatx.me/post/jspokergame" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">
@@ -55,7 +55,7 @@ export default function Sidebar() {
         case 'preferences':
         return (
             <div>
-            <button className="p-2 w-full bg-gray-500 mb-4" onClick={() => setCurrentTab('main')}>Back</button>
+            <button className="p-2 w-full bg-gray-500 mb-4 rounded-lg" onClick={() => setCurrentTab('main')}>Back</button>
             <div className="text-white">
                 <h2 className="text-lg font-bold mb-4">Card Preferences</h2>
                 <button onClick={() => setIsModalOpen(true)}>Click me to change Card Preferences!</button>

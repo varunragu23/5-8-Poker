@@ -11,7 +11,7 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentTab, setCurrentTab] = useState('main');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const {rules, updateRules} = useDeck();
+  const {rules, updateRules, userDealt, dealerDealt} = useDeck();
 
   const [selectedCards, setSelectedCards] = useState(rules);
 
@@ -26,6 +26,10 @@ export default function Sidebar() {
     updateRules(selectedCards);
     setIsModalOpen(false);
   };
+
+  const setPreferences = (newPreferences) => {
+    setSelectedCards(newPreferences);
+  }
 
   console.log(selectedCards['4H']);
   console.log(rules['4H']);
@@ -67,6 +71,8 @@ export default function Sidebar() {
     }
   };
 
+  console.log(userDealt, dealerDealt);
+
   return (
     <div className="relative z-10">
       <input type="checkbox" id="menu-toggle" className="hidden peer" />
@@ -92,6 +98,9 @@ export default function Sidebar() {
         preferences={selectedCards}
         handleCheckboxChange={handleCheckboxChange}
         savePreferences={savePreferences}
+        userDealt={userDealt}
+        dealerDealt={dealerDealt}
+        setPreferences={setPreferences}
       />
       {/* {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

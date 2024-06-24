@@ -73,6 +73,8 @@ export const DeckProvider = ({ children }) => {
 
   const [simulateMode, setSimulateMode] = useState(false);
 
+  const [betSubmitted, setBetSubmitted] = useState(false);
+
   useEffect(() => {
     getWinner();
   }, [userDealt, dealerDealt]);
@@ -143,6 +145,7 @@ export const DeckProvider = ({ children }) => {
   const dealCard = () => {
     if (deck.length === 0) {
       setGameOver(true);
+
       return;
     }
 
@@ -176,6 +179,7 @@ export const DeckProvider = ({ children }) => {
 
     if(userLen === 5 && dealerLen >= 8) {
       setGameOver(true);
+
     }
     console.log('gameOver' + gameOver);
     console.log('user ' + userDealt.length);
@@ -238,7 +242,14 @@ export const DeckProvider = ({ children }) => {
     setUserDealt([]);
     setDealerDealt([]);
     setStartTurn(true);
+    setBetSubmitted(false);
   }
+
+  function handleBetScreenSubmit(bet) {
+    setBankroll(prevValue => (prevValue - bet));
+    // setIsStartScreen(false);
+    setGameOver(false);
+}
 
   if(simulateMode) {
     setTimeout(() => {
@@ -251,7 +262,8 @@ export const DeckProvider = ({ children }) => {
       deck, dealt, userDealt, dealerDealt, dealCard, getTopDeck, cardImages, rules, getUserHand, 
       getDealerHand, getWinner, updateRules, userWinning, gameOver, gameStarted, setGameOver, bankroll,
       betAmt, setBetAmt, setBankroll, resetGame, isAnimating,
-      getInitialSrc, getFinalSrc, showFinalSrc, isFlipping, simulateRound, setSimulateMode
+      getInitialSrc, getFinalSrc, showFinalSrc, isFlipping, simulateRound, setSimulateMode,
+      betSubmitted, setBetSubmitted, handleBetScreenSubmit, startTurn
       }}>
       {children}
     </DeckContext.Provider>

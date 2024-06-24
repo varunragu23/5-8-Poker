@@ -7,7 +7,7 @@ export default function Table() {
     const { deck, dealCard, cardImages, dealt, dealerDealt, userDealt, userWinning, 
         getUserHand, getDealerHand, gameOver, setGameOver, bankroll, setBankroll, 
         betAmt, getWinner, resetGame, isAnimating, getInitialSrc, getFinalSrc, 
-        showFinalSrc, isFlipping, simulateRound, setSimulateMode} = useDeck();
+        showFinalSrc, isFlipping, simulateRound, setSimulateMode, betSubmitted} = useDeck();
 
     const [isStartScreen, setIsStartScreen] = useState(true);
 
@@ -82,7 +82,9 @@ export default function Table() {
     }
 
     function continueGame() {
-        setIsStartScreen(true);
+        resetGame();
+
+        setGameOver(false);
     }
 
     function gameOverScreen() {
@@ -129,7 +131,7 @@ export default function Table() {
 
     function gameScreen() {
         return <>
-        {getDealerInfo()}
+        {/* {getDealerInfo()} */}
         <div className="flex content-center justify-evenly w-2/3 h-1/2 items-center m-2">
             {getDeckSrc()}
             <div className="w-24">
@@ -138,14 +140,14 @@ export default function Table() {
             className="w-24 h-auto"
             />)}
             </div>
-            {(!gameOver) && (
+            {(!gameOver && betSubmitted) && (
             <div className="flex flex-col justify-evenly">
             <button className ="bg-blue-700 hover:bg-blue-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24"onClick={handleTurn}>Deal</button>
             </div>
             
             ) }
         </div>
-        {getUserInfo()}
+        {/* {getUserInfo()} */}
         </>
     }
 
@@ -154,10 +156,10 @@ export default function Table() {
     debug();
 
     function renderContent() {
-        if(isStartScreen) {
-            return startScreen();
-        }
-        else if(gameOver) {
+        // if(isStartScreen) {
+            // return startScreen();
+        // }
+        if(gameOver) {
             return gameOverScreen();
         }
         else {
@@ -168,7 +170,7 @@ export default function Table() {
     // getWinner();
 
     return (
-      <div className="relative bg-green-600 w-2/3 h-1/2 rounded-full shadow-lg flex flex-col justify-center items-center border-[16px] border-orange-900">
+      <div className="relative bg-gradient-to-r from-neutral-700 via-neutral-600 to-neutral-700 w-3/5 h-1/2 rounded-full shadow-lg flex flex-col justify-center items-center border-[16px] border-neutral-900">
         {
             renderContent()
         }

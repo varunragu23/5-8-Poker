@@ -170,7 +170,7 @@ export default function Table() {
     // getWinner();
 
     return (
-      <div className="relative bg-gradient-to-r from-neutral-700 via-neutral-600 to-neutral-700 w-3/5 h-1/2 rounded-full shadow-lg flex flex-col justify-center items-center border-[16px] border-neutral-900">
+      <div className="relative bg-gradient-to-r from-neutral-700 via-neutral-600 to-neutral-700 w-3/5 h-1/2 rounded-full shadow-lg shadow-neutral-600 flex flex-col justify-center items-center border-[12px] border-neutral-900">
         {
             renderContent()
         }

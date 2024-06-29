@@ -57,7 +57,7 @@ export default function CardPreferenceModal({ isOpen, onRequestClose, preference
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-neutral-700 p-6 rounded-lg shadow-lg w-1/2 ring-2 ring-neutral-400">
-        <h2 className="text-xl font-bold mb-4 text-white">Card Preferences</h2>
+        <h2 className="text-xl font-bold mb-2 text-white">Card Preferences</h2>
         <div>
         <input
           type="text"
@@ -67,7 +67,9 @@ export default function CardPreferenceModal({ isOpen, onRequestClose, preference
           placeholder="Enter your card preferences..."
         />
         <p className="text-sm mb-4 text-white">Ex: 'All cards with value 9' or 'Cards I need to get a straight'</p>
+        
         <button onClick={handleProcessInput} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mr-2">Process Input</button>
+        
         </div>
         <div className="grid grid-cols-4 gap-2 mb-4">
           {suits.map((suit, suitIndex) => (

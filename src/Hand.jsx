@@ -16,7 +16,7 @@ export default function Hand() {
             key={index}
             src={cardImages[`./assets/poker-double-qr/${card}.svg`].default}
             alt={card}
-            className={`w-16 h-auto hover:w-20 hover:z-10 ${index === dealerDealt.length - 1 ? 'mr-4' : ''}`}
+            className={`w-16 h-auto hover:w-20 hover:z-10 transition-all duration-200 ${index === dealerDealt.length - 1 ? 'mr-4' : ''}`}
           />
         ))}
         {dealerDealt.length > 10 && (

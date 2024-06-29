@@ -4,6 +4,8 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import _ from 'lodash';
 
 import { evaluateHand, compareHands } from './pokerEval';
+import axios from 'axios';
+
 
 const DeckContext = createContext();
 
@@ -75,8 +77,10 @@ export const DeckProvider = ({ children }) => {
 
   const [betSubmitted, setBetSubmitted] = useState(false);
 
+  const [message, setMessage] = useState('');
+
   useEffect(() => {
-    getWinner();
+    getWinner(dealerDealt, userDealt);
   }, [userDealt, dealerDealt]);
 
   useEffect(() => {
@@ -209,9 +213,9 @@ export const DeckProvider = ({ children }) => {
     return evaluateHand(dealerDealt)['hand'];
   }
 
-  const getWinner = () => {
-    let dealerHand = evaluateHand(dealerDealt);
-    let userHand = evaluateHand(userDealt);
+  const getWinner = (dealerDealtt, userDealtt) => {
+    let dealerHand = evaluateHand(dealerDealtt);
+    let userHand = evaluateHand(userDealtt);
     if(compareHands(dealerHand, userHand)) {
         console.log('The Dealer is winning with a ' + dealerHand['hand']);
         setUserWinning(false);
@@ -245,11 +249,42 @@ export const DeckProvider = ({ children }) => {
     setBetSubmitted(false);
   }
 
+  const handleExecute = async () => {
+    try {
+      console.log('I HAVE BEEN CALLED');
+      const response = await axios.post('http://localhost:5001/execute', { userDealt, dealerDealt });
+      updateRules(response.data);
+      console.log('Rules:', response.data);
+    } catch (error) {
+      console.error('Execution error:', error);
+      // setMessage('Execution Error');
+    }
+  };
+
   function handleBetScreenSubmit(bet) {
     setBankroll(prevValue => (prevValue - bet));
     // setIsStartScreen(false);
     setGameOver(false);
 }
+
+const simulateGames = async () => {
+  try {
+    const response = await axios.post('http://localhost:5001/simulate', {
+      initialDeck: deck,
+      numGames: 500 // Number of games to simulate
+    });
+
+    const { winPercentage } = response.data;
+    let pct = winPercentage.toFixed(1);
+    console.log(`Win percentage: ${pct}%`);
+    setMessage(`Win percentage: ${pct}%`)
+    // return response.data;
+  } catch (error) {
+    console.error('Simulation error:', error);
+    // setMessage('Simulation Error');
+  }
+};
+
 
   if(simulateMode) {
     setTimeout(() => {
@@ -263,7 +298,7 @@ export const DeckProvider = ({ children }) => {
       getDealerHand, getWinner, updateRules, userWinning, gameOver, gameStarted, setGameOver, bankroll,
       betAmt, setBetAmt, setBankroll, resetGame, isAnimating,
       getInitialSrc, getFinalSrc, showFinalSrc, isFlipping, simulateRound, setSimulateMode,
-      betSubmitted, setBetSubmitted, handleBetScreenSubmit, startTurn
+      betSubmitted, setBetSubmitted, handleBetScreenSubmit, startTurn, handleExecute, simulateGames, message, setMessage
       }}>
       {children}
     </DeckContext.Provider>

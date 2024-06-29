@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDeck } from './DeckContext';
 import CardPreferenceModal from './CardPreferenceModal';
 
@@ -10,6 +10,12 @@ export default function BetInfo() {
     const [isHovered, setIsHovered] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCards, setSelectedCards] = useState(rules);
+
+    // console.log(selectedCards, 'hi im selected cards');
+
+    useEffect(() => {
+        setSelectedCards(rules);
+    }, [rules]);
 
     const handleBetChange = (event) => {
         setBet(event.target.value);
@@ -48,7 +54,7 @@ export default function BetInfo() {
 
     return (
         <div
-            className={`absolute bottom-0 right-0 p-4 m-4 bg-neutral-700 text-white rounded-lg shadow-lg ${betSubmitted ? 'w-1/6 h-auto' : 'w-1/4 h-auto'} ${startTurn ? 'ring-2 ring-neutral-600' : ''} hover:w-1/4 hover:h-auto transition-all duration-600`}
+            className={`absolute bottom-0 right-0 p-4 m-4 bg-gray-900 text-white rounded-lg shadow-lg ${betSubmitted ? 'w-1/6 h-auto' : 'w-1/4 h-auto'} ${startTurn ? 'ring-2 ring-neutral-600' : ''} hover:w-1/4 hover:h-auto transition-all duration-300`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >       
@@ -68,7 +74,7 @@ export default function BetInfo() {
                         min="1"
                         max={bankroll}
                         onChange={handleBetChange}
-                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                        className="w-full h-2 bg-neutral-600 rounded-lg appearance-none cursor-pointer dark:bg-neutral-400"
                         disabled={betSubmitted}
                     />
                     <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">1</span>
@@ -90,7 +96,11 @@ export default function BetInfo() {
             <button className ="bg-green-700 hover:bg-green-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24"
             onClick={() => setIsModalOpen(true)}
             >Rules</button>
+            
             </div>
+            {(isHovered || !betSubmitted) && (
+        <div className="text-sm text-center">Learn more <a href="https://nwatx.me/post/jspokergame" target="_blank" className="underline hover:no-underline">here</a></div>
+            )}
             <CardPreferenceModal 
                 isOpen={isModalOpen}
                 onRequestClose={() => setIsModalOpen(false)}

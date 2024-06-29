@@ -155,7 +155,7 @@ const cntCard = (hand, value) => {
 }
 
 // Main function to evaluate the hand
-export const evaluateHand = (hand) => {
+const evaluateHand = (hand) => {
     let royalEval = isRoyalFlush(hand);
     if(royalEval) {
         return {'hand': 'Royal Flush', 'value': 1, 'index': 0};
@@ -199,7 +199,7 @@ export const evaluateHand = (hand) => {
     return {'hand': 'Empty Hand', 'value': 11, 'index': 0};
 };
 
-export const compareHands = (hand1, hand2) => {
+const compareHands = (hand1, hand2) => {
     if(hand1['value'] < hand2['value']) return true;
     if(hand1['value'] > hand2['value']) return false;
 
@@ -212,3 +212,4 @@ export const compareHands = (hand1, hand2) => {
     return false;
 }
 
+module.exports = {compareHands, evaluateHand}

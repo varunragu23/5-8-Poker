@@ -11,12 +11,15 @@ export const config = {
 export default (req, res) => {
   console.log('Incoming request');
   const form = new formidable.IncomingForm();
-  form.uploadDir = '/tmp';
+  const uploadDir = path.join('/tmp', 'uploads');
 
-  if (!fs.existsSync(form.uploadDir)) {
-    fs.mkdirSync(form.uploadDir);
-    console.log('Created /tmp directory');
+  // Ensure /tmp/uploads directory exists
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+    console.log('Created /tmp/uploads directory');
   }
+
+  form.uploadDir = uploadDir;
 
   form.parse(req, (err, fields, files) => {
     if (err) {
@@ -25,14 +28,14 @@ export default (req, res) => {
     }
 
     const userFile = files.file;
-    const uploadPath = path.join('/tmp', 'algo.js');
+    const uploadPath = path.join(uploadDir, 'algo.js');
 
     fs.renameSync(userFile.path, uploadPath);
     console.log('File renamed successfully');
 
-    // List contents of /tmp for debugging
-    const tmpContents = fs.readdirSync('/tmp');
-    console.log('Contents of /tmp:', tmpContents);
+    // List contents of /tmp/uploads for debugging
+    const tmpContents = fs.readdirSync(uploadDir);
+    console.log('Contents of /tmp/uploads:', tmpContents);
 
     return res.status(200).json({
       message: 'File uploaded successfully',

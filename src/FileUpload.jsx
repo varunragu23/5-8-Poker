@@ -28,7 +28,7 @@ export default function FileUpload() {
     formData.append('file', file);
 
     try {
-      await axios.post('http://localhost:5001/upload', formData);
+      await axios.post('/api/upload', formData);
       setMessage('File uploaded successfully!');
       setFileUploaded(oldFileUploaded => (oldFileUploaded + 1));
     } catch (error) {

@@ -252,7 +252,7 @@ export const DeckProvider = ({ children }) => {
   const handleExecute = async () => {
     try {
       console.log('I HAVE BEEN CALLED');
-      const response = await axios.post('http://localhost:5001/execute', { userDealt, dealerDealt });
+      const response = await axios.post('/api/execute', { userDealt, dealerDealt });
       updateRules(response.data);
       console.log('Rules:', response.data);
     } catch (error) {
@@ -269,7 +269,7 @@ export const DeckProvider = ({ children }) => {
 
 const simulateGames = async () => {
   try {
-    const response = await axios.post('http://localhost:5001/simulate', {
+    const response = await axios.post('/api/simulate', {
       initialDeck: deck,
       numGames: 500 // Number of games to simulate
     });

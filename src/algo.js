@@ -1,6 +1,6 @@
 const suits = ['C', 'D', 'H', 'S'];
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
-const faceValues = ['T', 'J', 'Q', 'K', '9'];
+const faceValues = ['T', 'J', 'Q', 'K', 'A'];
 
 const hasValue = (val, dealt) => {
     for(let i = 0; i < dealt.length; i++) {

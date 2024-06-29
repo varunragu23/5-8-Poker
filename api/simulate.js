@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import formidable from 'formidable-serverless';
 import { evaluateHand, compareHands } from '../server/pokerEval.cjs';
 
 const simulateGame = (deck, getRules) => {
@@ -37,11 +38,30 @@ const getWinner = (dealerDealt, userDealt) => {
   return compareHands(dealerHand, userHand);
 };
 
-export default async (req, res) => {
-  const { initialDeck, numGames } = req.body;
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
-  try {
-    const { getRules } = await import(`/tmp/uploads/algo.js`);
+export default async (req, res) => {
+  const form = new formidable.IncomingForm();
+  form.uploadDir = '/tmp/uploads';
+
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      return res.status(500).json({ error: 'File upload error' });
+    }
+
+    const userFile = files.file;
+    const uploadPath = `${form.uploadDir}/algo.js`;
+
+    // Rename the uploaded file
+    fs.renameSync(userFile.path, uploadPath);
+
+    // Import the uploaded module
+    const { getRules } = await import(uploadPath);
+    const { initialDeck, numGames } = JSON.parse(fields.simulationData);
     let winCount = 0;
 
     for (let i = 0; i < numGames; i++) {
@@ -55,8 +75,6 @@ export default async (req, res) => {
     }
 
     const winPercentage = (winCount / numGames) * 100;
-    res.status(200).json({ winPercentage });
-  } catch (error) {
-    res.status(500).json({ error: `Simulation error: ${error.message}` });
-  }
+    return res.status(200).json({ winPercentage });
+  });
 };

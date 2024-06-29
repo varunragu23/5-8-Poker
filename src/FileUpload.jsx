@@ -3,13 +3,13 @@ import axios from 'axios';
 import { useDeck } from './DeckContext';
 
 export default function FileUpload() {
-  const { userDealt, dealerDealt, rules, updateRules, startTurn, handleExecute, simulateGames, message, setMessage } = useDeck();
+  const { deck, userDealt, dealerDealt, rules, updateRules, startTurn,  message, setMessage } = useDeck();
   const [file, setFile] = useState(null);
-  const [fileUploaded, setFileUploaded] = useState(0);
+  const [fileUploaded, setFileUploaded] = useState(false);
 
   useEffect(() => {
-    if(fileUploaded > 0 && startTurn) {
-      handleExecute();
+    if((fileUploaded) && startTurn) {
+      handleFileUploadAndExecute();
     }
   }, [fileUploaded, userDealt]);
 
@@ -17,22 +17,86 @@ export default function FileUpload() {
     setFile(event.target.files[0]);
   };
 
-  const handleFileUpload = async () => {
+  const handleExecute = async () => {
+    try {
+      console.log('I HAVE BEEN CALLED');
+      const response = await axios.post('/api/execute', { userDealt, dealerDealt });
+      updateRules(response.data);
+      console.log('Rules:', response.data);
+    } catch (error) {
+      console.error('Execution error:', error);
+      // setMessage('Execution Error');
+    }
+  };
+
+  const simulateGames = async () => {
     if (!file) {
       setMessage('Please select a file to upload.');
       return;
     }
-
-
+  
     const formData = new FormData();
     formData.append('file', file);
-
+    formData.append('simulationData', JSON.stringify({ initialDeck: deck, numGames: 500 }));
+  
     try {
-      await axios.post('/api/upload', formData);
-      setMessage('File uploaded successfully!');
-      setFileUploaded(oldFileUploaded => (oldFileUploaded + 1));
+      const response = await axios.post('/api/simulate', formData);
+      const { winPercentage } = response.data;
+  
+      if (typeof winPercentage === 'number') {
+        let pct = winPercentage.toFixed(1);
+        console.log(`Win percentage: ${pct}%`);
+        setMessage(`Win percentage: ${pct}%`);
+      } else {
+        console.error('Invalid winPercentage:', winPercentage);
+        setMessage('Simulation Error');
+      }
     } catch (error) {
-      setMessage('Error uploading file. Please try again.');
+      console.error('Simulation error:', error);
+      setMessage('Simulation Error');
+    }
+  };
+  
+  
+
+  // const handleFileUpload = async () => {
+  //   if (!file) {
+  //     setMessage('Please select a file to upload.');
+  //     return;
+  //   }
+
+
+  //   const formData = new FormData();
+  //   formData.append('file', file);
+
+  //   try {
+  //     await axios.post('/api/upload', formData);
+  //     setMessage('File uploaded successfully!');
+  //     setFileUploaded(oldFileUploaded => (oldFileUploaded + 1));
+  //   } catch (error) {
+  //     setMessage('Error uploading file. Please try again.');
+  //   }
+  // };
+
+  const handleFileUploadAndExecute = async () => {
+    console.log('i have been called lololol', userDealt, dealerDealt);
+    if (!file) {
+      setMessage('Please select a file to upload.');
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('data', JSON.stringify({ userDealt, dealerDealt }));
+  
+    try {
+      const response = await axios.post('/api/uploadExecute', formData);
+      updateRules(response.data);
+      setMessage('File executed successfully!');
+      setFileUploaded(true);
+    } catch (error) {
+      setMessage('Error uploading or executing file. Please try again.');
+      console.error('Upload/Execute error:', error);
     }
   };
 
@@ -63,12 +127,12 @@ export default function FileUpload() {
     />
       {/* <input type="file" onChange={handleFileChange} /> */}
       <div className="flex">
-      <button onClick={handleFileUpload} className="bg-blue-700 hover:bg-blue-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24">
+      <button onClick={handleFileUploadAndExecute} className="bg-blue-700 hover:bg-blue-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24">
         Upload
       </button>
-      <button onClick={handleExecute} className="bg-green-600 hover:bg-green-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24">
+      {/* <button onClick={handleExecute} className="bg-green-600 hover:bg-green-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24">
         Execute
-      </button>
+      </button> */}
       <button onClick={simulateGames} className="bg-yellow-600 hover:bg-yellow-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24">
         Sim
       </button>

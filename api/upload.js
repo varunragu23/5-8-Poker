@@ -9,37 +9,40 @@ export const config = {
 };
 
 export default (req, res) => {
-  console.log('Incoming request');
-  const form = new formidable.IncomingForm();
-  const uploadDir = path.join('/tmp', 'uploads');
+  try {
+    console.log('Incoming request');
+    const form = new formidable.IncomingForm();
+    const uploadDir = path.join('/tmp', 'uploads');
 
-  // Ensure /tmp/uploads directory exists
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-    console.log('Created /tmp/uploads directory');
-  }
-
-  form.uploadDir = uploadDir;
-
-  form.parse(req, (err, fields, files) => {
-    if (err) {
-      console.error('File upload error:', err);
-      return res.status(500).json({ error: 'File upload error' });
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+      console.log('Created /tmp/uploads directory');
     }
 
-    const userFile = files.file;
-    const uploadPath = path.join(uploadDir, 'algo.js');
+    form.uploadDir = uploadDir;
 
-    fs.renameSync(userFile.path, uploadPath);
-    console.log('File renamed successfully');
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        console.error('File upload error:', err);
+        return res.status(500).json({ error: 'File upload error' });
+      }
 
-    // List contents of /tmp/uploads for debugging
-    const tmpContents = fs.readdirSync(uploadDir);
-    console.log('Contents of /tmp/uploads:', tmpContents);
+      const userFile = files.file;
+      const uploadPath = path.join(uploadDir, 'algo.js');
 
-    return res.status(200).json({
-      message: 'File uploaded successfully',
-      tmpContents,
+      fs.renameSync(userFile.path, uploadPath);
+      console.log('File renamed successfully');
+
+      const tmpContents = fs.readdirSync(uploadDir);
+      console.log('Contents of /tmp/uploads:', tmpContents);
+
+      return res.status(200).json({
+        message: 'File uploaded successfully',
+        tmpContents,
+      });
     });
-  });
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return res.status(500).json({ error: 'Unexpected error occurred' });
+  }
 };

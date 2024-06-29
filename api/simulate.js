@@ -38,25 +38,26 @@ const getWinner = (dealerDealt, userDealt) => {
 };
 
 export default async (req, res) => {
-  const { initialDeck, numGames } = req.body;
-
-  try {
-    const { getRules } = await import(`/tmp/algo.js`);
-    let winCount = 0;
-
-    for (let i = 0; i < numGames; i++) {
-      let deckCopy = [...initialDeck];
-      deckCopy.sort(() => Math.random() - 0.5);
-      const result = simulateGame(deckCopy, getRules);
-
-      if (!getWinner(result.dealerDealt, result.userDealt)) {
-        winCount++;
+    const { initialDeck, numGames } = req.body;
+  
+    try {
+      const { getRules } = await import(`/tmp/algo.js`);
+      let winCount = 0;
+  
+      for (let i = 0; i < numGames; i++) {
+        let deckCopy = [...initialDeck];
+        deckCopy.sort(() => Math.random() - 0.5);
+        const result = simulateGame(deckCopy, getRules);
+  
+        if (!getWinner(result.dealerDealt, result.userDealt)) {
+          winCount++;
+        }
       }
+  
+      const winPercentage = (winCount / numGames) * 100;
+      res.status(200).json({ winPercentage });
+    } catch (error) {
+      res.status(500).json({ error: `Simulation error: ${error.message}` });
     }
-
-    const winPercentage = (winCount / numGames) * 100;
-    return res.status(200).json({ winPercentage: winPercentage.toFixed(2) });
-  } catch (error) {
-    return res.status(500).json({ error: `Simulation error: ${error.message}` });
-  }
-};
+  };
+  

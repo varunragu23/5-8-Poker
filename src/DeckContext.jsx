@@ -275,15 +275,21 @@ const simulateGames = async () => {
     });
 
     const { winPercentage } = response.data;
-    let pct = winPercentage.toFixed(1);
-    console.log(`Win percentage: ${pct}%`);
-    setMessage(`Win percentage: ${pct}%`)
-    // return response.data;
+
+    if (typeof winPercentage === 'number') {
+      let pct = winPercentage.toFixed(1);
+      console.log(`Win percentage: ${pct}%`);
+      setMessage(`Win percentage: ${pct}%`);
+    } else {
+      console.error('Invalid winPercentage:', winPercentage);
+      setMessage('Simulation Error');
+    }
   } catch (error) {
     console.error('Simulation error:', error);
-    // setMessage('Simulation Error');
+    setMessage('Simulation Error');
   }
 };
+
 
 
   if(simulateMode) {

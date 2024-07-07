@@ -46,35 +46,55 @@ export const config = {
 
 export default async (req, res) => {
   const form = new formidable.IncomingForm();
-  form.uploadDir = '/tmp/uploads';
+  const uploadDir = path.join('/tmp', 'uploads');
+
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+    console.log('Created /tmp/uploads directory');
+  }
+
+  form.uploadDir = uploadDir;
 
   form.parse(req, async (err, fields, files) => {
     if (err) {
+      console.error('File upload error:', err);
       return res.status(500).json({ error: 'File upload error' });
     }
 
     const userFile = files.file;
-    const uploadPath = `${form.uploadDir}/algo.js`;
+    const uploadPath = path.join(uploadDir, 'algo.js');
 
-    // Rename the uploaded file
     fs.renameSync(userFile.path, uploadPath);
+    console.log('File renamed successfully');
 
-    // Import the uploaded module
-    const { getRules } = await import(uploadPath);
-    const { initialDeck, numGames } = JSON.parse(fields.simulationData);
-    let winCount = 0;
+    // Print contents of /tmp/uploads directory for debugging
+    const tmpContents = fs.readdirSync(uploadDir);
+    console.log('Contents of /tmp/uploads before execution:', tmpContents);
 
-    for (let i = 0; i < numGames; i++) {
-      let deckCopy = [...initialDeck];
-      deckCopy.sort(() => Math.random() - 0.5);
-      const result = simulateGame(deckCopy, getRules);
+    try {
+      const { getRules } = await import(uploadPath);
+      const { initialDeck, numGames } = JSON.parse(fields.simulationData);
+      let winCount = 0;
 
-      if (!getWinner(result.dealerDealt, result.userDealt)) {
-        winCount++;
+      for (let i = 0; i < numGames; i++) {
+        let deckCopy = [...initialDeck];
+        deckCopy.sort(() => Math.random() - 0.5);
+        const result = simulateGame(deckCopy, getRules);
+
+        if (!getWinner(result.dealerDealt, result.userDealt)) {
+          winCount++;
+        }
       }
+
+      const winPercentage = (winCount / numGames) * 100;
+      res.status(200).json({ winPercentage });
+    } catch (error) {
+      console.error(`Simulation error: ${error.message}`);
+      return res.status(500).json({ error: `Simulation error: ${error.message}` });
     }
 
-    const winPercentage = (winCount / numGames) * 100;
-    return res.status(200).json({ winPercentage });
+    // Print contents of /tmp/uploads directory after execution
+    const tmpContentsAfter = fs.readdirSync(uploadDir);
+    console.log('Contents of /tmp/uploads after execution:', tmpContentsAfter);
   });
 };

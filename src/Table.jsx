@@ -19,7 +19,7 @@ export default function Table() {
         if(deck.length > 0) {
             return (<div><img
                 src={cardImages[`./assets/poker-double-qr/2B.svg`].default}
-                className="w-24 h-auto"
+                className="w-32 h-auto"
                 /></div>);
         }
         if(deck.length == 0) {
@@ -88,7 +88,7 @@ export default function Table() {
     }
 
     function gameOverScreen() {
-        return <div className="flex flex-col justify-around items-center w-1/2 h-1/2 bg-white rounded-lg p-2 m-2 shadow-md">
+        return <div className="flex flex-col justify-around items-center w-1/2 h-1/2 bg-neutral-800 rounded-lg p-2 m-2 shadow-md text-white">
                 <div>{getWinnerMessage()}</div>
                 <div>You {(userWinning ? 'won' : 'lost')} ${betAmt}</div>
                 <div>Current Bankroll: {bankroll}</div>
@@ -134,10 +134,10 @@ export default function Table() {
         {/* {getDealerInfo()} */}
         <div className="flex content-center justify-evenly w-2/3 h-1/2 items-center m-2">
             {getDeckSrc()}
-            <div className="w-24">
+            <div className="w-32">
                 {(dealt.length > 0) && (<img
             src={cardImages[`./assets/poker-double-qr/${getTopDealt()}.svg`].default}
-            className="w-24 h-auto"
+            className="w-32 h-auto"
             />)}
             </div>
             {(!gameOver && betSubmitted) && (

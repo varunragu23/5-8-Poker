@@ -1,3 +1,9 @@
+// sample algorithm template, copy this as starter code
+// your algorithm should be written in javascript, and should be contained
+// within the function getRules that takes parameters userDealt, dealerDealt
+
+// this particular algorithm attempts to get a straight of 'T', 'J', 'Q', 'K', 'A' every time
+
 const suits = ['C', 'D', 'H', 'S'];
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
 const faceValues = ['T', 'J', 'Q', 'K', 'A'];

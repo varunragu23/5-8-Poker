@@ -3,7 +3,7 @@ import { useDeck } from './DeckContext';
 import CardPreferenceModal from './CardPreferenceModal';
 
 
-export default function BetInfo() {
+export default function BetInfo({onModal, rulesHover, prefHover}) {
     const { bankroll, betSubmitted, setBetSubmitted, betAmt, 
         setBetAmt, handleBetScreenSubmit, rules, updateRules, userDealt, dealerDealt, startTurn } = useDeck();
     const [bet, setBet] = useState(betAmt);
@@ -51,10 +51,17 @@ export default function BetInfo() {
     //         if(!betSubmitted)
     //     }
     // }
+    console.log('bet amt is', betAmt);
+
+    console.log('bet is', bet);
+
+    if(betSubmitted && betAmt != bet) {
+        setBet(betAmt);
+    }
 
     return (
         <div
-            className={`absolute bottom-0 right-0 p-4 m-4 bg-gray-900 text-white rounded-lg shadow-lg ${betSubmitted ? 'w-1/6 h-auto' : 'w-1/4 h-auto'} ${startTurn ? 'ring-2 ring-neutral-600' : ''} hover:w-1/4 hover:h-auto transition-all duration-300`}
+            className={`${!onModal ? 'absolute bottom-0 right-0' : ''} p-4 m-4 bg-gray-900 text-white rounded-lg shadow-lg ${betSubmitted ? 'w-1/6 h-auto' : 'w-1/4 h-auto'} ${startTurn ? 'ring-2 ring-neutral-600' : ''} hover:w-1/4 hover:h-auto transition-all duration-300`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >       
@@ -87,15 +94,16 @@ export default function BetInfo() {
             )}
             <div className="flex items-center justify-center">
             {((!betSubmitted)) && (
-            <button className ="bg-blue-700 hover:bg-blue-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24"
+            <button className ={`bg-blue-700 hover:bg-blue-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24 transition-all duration-300 ${rulesHover ? 'ring-2 ring-white': ''}`}
             onClick={submitBet}
             disabled={betSubmitted}
             >Submit</button>
 
             )}
-            <button className ="bg-green-700 hover:bg-green-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24"
+            <button className ={`bg-green-700 hover:bg-green-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24 transition-all duration-300 ${prefHover ? 'ring-2 ring-white': ''}`}
+
             onClick={() => setIsModalOpen(true)}
-            >Rules</button>
+            >Cards</button>
             
             </div>
             {(isHovered || !betSubmitted) && (

@@ -22,6 +22,6 @@ export const createPrompt = (input, userDealt, dealerDealt) => {
      + userCards 
     + dealerCards;
   prompt = prompt +  `The user's requested subset of cards is as follows: "${input}" 
-  Please select their requested cards from the provided list and print only the cards the user needs to select`
+  Please select their requested cards from the provided list and print only the cards the user needs to select. This is important! don't give the user all the available cards, only the cards they want`
   return prompt;
 };

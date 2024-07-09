@@ -133,7 +133,7 @@ export default function FileUpload() {
       {/* <button onClick={handleExecute} className="bg-green-600 hover:bg-green-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24">
         Execute
       </button> */}
-      <button onClick={simulateGames} className="bg-yellow-600 hover:bg-yellow-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24">
+      <button onClick={simulateGames} className="bg-green-700 hover:bg-yellow-800 text-white rounded-lg shadow-lg h-auto m-2 p-2 w-24">
         Sim
       </button>
       </div>

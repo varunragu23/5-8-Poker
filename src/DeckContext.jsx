@@ -64,8 +64,7 @@ export const DeckProvider = ({ children }) => {
 
   const [bankroll, setBankroll] = useState(1000);
 
-  const [betAmt, setBetAmt] = useState(1);
-
+  const [betAmt, setBetAmt] = useState(500);
   const [isAnimating, setIsAnimating] = useState(false);
   const [animatedCard, setAnimatedCard] = useState(null);
 
